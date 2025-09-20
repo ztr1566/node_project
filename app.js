@@ -46,8 +46,6 @@ app.listen(port, () => {
 // MongoDB Connection
 main().catch((error) => console.log(error));
 async function main() {
-  await mongoose.connect(
-    "mongodb+srv://zizoo1566_db:5kvP6ZDwfYv050Dj@cluster0.k8vqb7s.mongodb.net/all-data?retryWrites=true&w=majority&appName=Cluster0"
-  );
+  await mongoose.connect(process.env.DATABASE_URL)
   console.log("Connected to database");
 }
