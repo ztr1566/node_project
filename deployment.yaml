@@ -13,10 +13,10 @@ spec:
         app: node-app
     spec:
       containers:
-      - name: node-app-container
-        image: zizoo1566/node-app:1.1.0 
-        ports:
-        - containerPort: 3000
-  env:
-        - name: DATABASE_URL
-          value: "mongodb+srv://zizoo1566_db:5kvP6ZDwfYv050Dj@cluster0.k8vqb7s.mongodb.net/all-data?retryWrites=true&w=majority&appName=Cluster0"
+        - name: node-app-container
+          image: zizoo1566/node-app:1.1.0
+          ports:
+            - containerPort: 3000
+          env:
+            - name: DATABASE_URL
+              value: "mongodb+srv://zizoo1566_db:5kvP6ZDwfYv050Dj@cluster0.k8vqb7s.mongodb.net/all-data?retryWrites=true&w=majority&appName=Cluster0"
