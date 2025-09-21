@@ -1,6 +1,6 @@
 let moment = require("moment");
 const { getNames } = require("country-list");
-const customUser = require("../models/mydataSchema");
+const customUser = require("../models/customerSchema");
 
 const user_get_index = (req, res) => {
   const status = "index";

@@ -4,8 +4,7 @@ const express = require("express");
 const app = express();
 const port = process.env.PORT || 3001;
 const mongoose = require("mongoose");
-const add_user = require("./routes/add_user");
-const all_routes = require("./routes/all_routes");
+const allRoutes = require("./routes/allRouters");
 const path = require("path");
 const livereload = require("livereload");
 
@@ -24,10 +23,9 @@ const connectLivereload = require("connect-livereload");
 let methodOverride = require("method-override");
 app.use(methodOverride("_method"));
 
-// Get and Post Routes
+// Middleware
 
-app.use(all_routes);
-app.use("/user/add.html", add_user);
+app.use(allRoutes);
 
 // Server Connection
 
