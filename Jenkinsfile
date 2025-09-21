@@ -44,16 +44,18 @@ spec:
         }
         stage('Build and Push Image') {
             steps {
-                // الآن أمر docker سيعمل لأنه يتحدث مباشرة مع Docker daemon الخاص بالسيرفر
-                docker.withRegistry('https://registry.hub.docker.com', 'dockerhub') {
-                    def customImage = docker.build("${DOCKER_IMAGE}:${env.BUILD_ID}")
-                    customImage.push()
+                // *** هذا هو التصحيح ***
+                // يجب وضع الأوامر المعقدة داخل script block
+                script {
+                    docker.withRegistry('https://registry.hub.docker.com', 'dockerhub') {
+                        def customImage = docker.build("${DOCKER_IMAGE}:${env.BUILD_ID}")
+                        customImage.push()
+                    }
                 }
             }
         }
         stage('Deploy to Kubernetes') {
             steps {
-                // لن نستخدم kubeconfig، سيعتمد kubectl على الأذونات الداخلية للكلاستر
                 script {
                     sh "sed -i 's|\\${DOCKER_IMAGE}|${DOCKER_IMAGE}|g' kubernetes/deployment.yaml"
                     sh "sed -i 's|\\${BUILD_ID}|${env.BUILD_ID}|g' kubernetes/deployment.yaml"
