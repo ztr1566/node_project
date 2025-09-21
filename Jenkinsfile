@@ -1,31 +1,24 @@
 pipeline {
     agent {
         kubernetes {
-            // نحدد الحاوية الافتراضية بشكل صريح لحل مشكلة "process never started"
-            defaultContainer 'kubectl'
+            // نستخدم Pod بسيط بحاوية واحدة فقط ونقوم بتمرير Docker socket الخاص بالـ Host
             yaml '''
 apiVersion: v1
 kind: Pod
 spec:
   containers:
-  - name: kaniko
-    image: gcr.io/kaniko-project/executor:debug
-    imagePullPolicy: Always
-    command:
-    - /busybox/cat
-    tty: true
-    volumeMounts:
-      - name: docker-config
-        mountPath: /kaniko/.docker
-  - name: kubectl
-    image: bitnami/kubectl:1.28
+  - name: docker
+    image: docker:20.10.17-alpine
     command:
     - cat
     tty: true
+    volumeMounts:
+    - name: docker-socket
+      mountPath: /var/run/docker.sock
   volumes:
-    - name: docker-config
-      secret:
-        secretName: docker-config
+  - name: docker-socket
+    hostPath:
+      path: /var/run/docker.sock
 '''
         }
     }
@@ -35,23 +28,32 @@ spec:
     stages {
         stage('Checkout') {
             steps {
-                // سيتم تنفيذ هذا الأمر في الحاوية الافتراضية (kubectl)
                 git branch: 'main', url: 'https://github.com/ztr1566/node_project.git'
+            }
+        }
+        stage('Prepare Environment') {
+            steps {
+                // نقوم بتثبيت الأدوات اللازمة داخل الحاوية
+                sh '''
+                apk add --no-cache curl git
+                echo "--- Installing kubectl ---"
+                curl -LO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl"
+                install -o root -g root -m 0755 kubectl /usr/local/bin/kubectl
+                '''
             }
         }
         stage('Build and Push Image') {
             steps {
-                // نتجاوز الحاوية الافتراضية ونستخدم kaniko لهذه المرحلة فقط
-                container('kaniko') {
-                    sh '''
-                    /kaniko/executor --context `pwd` --destination ${DOCKER_IMAGE}:${BUILD_ID}
-                    '''
+                // الآن أمر docker سيعمل لأنه يتحدث مباشرة مع Docker daemon الخاص بالسيرفر
+                docker.withRegistry('https://registry.hub.docker.com', 'dockerhub') {
+                    def customImage = docker.build("${DOCKER_IMAGE}:${env.BUILD_ID}")
+                    customImage.push()
                 }
             }
         }
         stage('Deploy to Kubernetes') {
             steps {
-                // سيتم تنفيذ هذا الأمر في الحاوية الافتراضية (kubectl)
+                // لن نستخدم kubeconfig، سيعتمد kubectl على الأذونات الداخلية للكلاستر
                 script {
                     sh "sed -i 's|\\${DOCKER_IMAGE}|${DOCKER_IMAGE}|g' kubernetes/deployment.yaml"
                     sh "sed -i 's|\\${BUILD_ID}|${env.BUILD_ID}|g' kubernetes/deployment.yaml"
