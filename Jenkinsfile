@@ -12,15 +12,16 @@ pipeline {
             }
         }
         stage('Build Docker Image') {
-            steps {
-                script {
-                    docker.withRegistry('https://registry.hub.docker.com', DOCKERHUB_CREDENTIALS) {
-                        def customImage = docker.build(DOCKER_IMAGE + ":${env.BUILD_ID}")
-                        customImage.push()
-                    }
-                }
+    steps {
+        script {
+            // We will use the credential ID 'dockerhub' directly here
+            docker.withRegistry('https://registry.hub.docker.com', 'dockerhub') {
+                def customImage = docker.build("${DOCKER_IMAGE}:${env.BUILD_ID}")
+                customImage.push()
             }
         }
+    }
+}
         stage('Deploy to K3s') {
             steps {
                 script {
