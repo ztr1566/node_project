@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en" data-bs-theme="auto">
+<head>
+    <script src="/js/color-modes.js"></script>
+    <link rel="stylesheet" href="/bootstrap-icons-1.10.5/font/bootstrap-icons.min.css" />
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title><%= title %></title>
+    <link href="/css/bootstrap.min.css" rel="stylesheet" />
+    <link rel="stylesheet" href="/css/dark-light.css" />
+    <link href="/css/sidebars.css" rel="stylesheet" />
+    <link rel="stylesheet" href="/css/myStyle.css" />
+</head>
+<body>
+    <%- include('../components/dark-light.ejs') %>
+
+    <main class="d-flex flex-nowrap">
+      <%- include('../components/sidebar.ejs', {status: 'dashboard'}) %>
+
+      <div class="container-fluid" style="padding: 20px;">
+        <% if (success && success.length > 0) { %>
+            <div class="alert alert-success alert-dismissible fade show" role="alert">
+                <i class="bi bi-check-circle-fill"></i> <%= success %>
+                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+            </div>
+        <% } %>
+
+        <% if (error && error.length > 0) { %>
+            <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                <i class="bi bi-exclamation-triangle-fill"></i> <%= error %>
+                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+            </div>
+        <% } %>
+
+        <!-- Welcome Card -->
+        <div class="card mb-4">
+            <div class="card-body">
+                <h2 class="card-title">Welcome back! 👋</h2>
+                <p class="card-text">You're successfully logged in to your account.</p>
+            </div>
+        </div>
+
+        <!-- User Information Card -->
+        <div class="card mb-4">
+            <div class="card-header">
+                <h5 class="mb-0"><i class="bi bi-person-circle me-2"></i>Account Information</h5>
+            </div>
+            <div class="card-body">
+                <div class="row g-3">
+                    <div class="col-md-6">
+                        <div class="d-flex align-items-center">
+                            <i class="bi bi-envelope fs-4 text-primary me-3"></i>
+                            <div>
+                                <small class="text-muted d-block">Email Address</small>
+                                <strong><%= user.email %></strong>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="d-flex align-items-center">
+                            <i class="bi bi-calendar-check fs-4 text-primary me-3"></i>
+                            <div>
+                                <small class="text-muted d-block">Member Since</small>
+                                <strong><%= new Date(user.createdAt).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' }) %></strong>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="d-flex align-items-center">
+                            <i class="bi bi-shield-check fs-4 text-success me-3"></i>
+                            <div>
+                                <small class="text-muted d-block">Account Status</small>
+                                <span class="badge bg-success">Active</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Quick Links -->
+        <h5 class="mb-3">Quick Links</h5>
+        <div class="row g-3">
+            <div class="col-md-3 col-sm-6">
+                <a href="/" class="card text-center text-decoration-none h-100">
+                    <div class="card-body">
+                        <i class="bi bi-house-door fs-1 text-primary"></i>
+                        <h6 class="mt-2 mb-0">Home</h6>
+                    </div>
+                </a>
+            </div>
+            <div class="col-md-3 col-sm-6">
+                <a href="/user/add.html" class="card text-center text-decoration-none h-100">
+                    <div class="card-body">
+                        <i class="bi bi-person-plus fs-1 text-primary"></i>
+                        <h6 class="mt-2 mb-0">Add Customer</h6>
+                    </div>
+                </a>
+            </div>
+            <div class="col-md-3 col-sm-6">
+                <a href="/search" class="card text-center text-decoration-none h-100">
+                    <div class="card-body">
+                        <i class="bi bi-search fs-1 text-primary"></i>
+                        <h6 class="mt-2 mb-0">Search</h6>
+                    </div>
+                </a>
+            </div>
+            <div class="col-md-3 col-sm-6">
+                <a href="/account/settings" class="card text-center text-decoration-none h-100">
+                    <div class="card-body">
+                        <i class="bi bi-gear fs-1 text-primary"></i>
+                        <h6 class="mt-2 mb-0">Settings</h6>
+                    </div>
+                </a>
+            </div>
+        </div>
+      </div>
+    </main>
+
+    <script src="/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

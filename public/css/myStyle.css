@@ -3,11 +3,45 @@
   font-size: 1.9rem;
 }
 
+/* Body and main layout */
+body {
+  background-color: var(--bs-body-bg);
+  margin: 0;
+  padding: 0;
+}
+
+main.d-flex.flex-nowrap {
+  min-height: 100vh;
+  background-color: var(--bs-body-bg);
+}
+
 
 /* SIDEBAR */
 .sidebar{
   width: 280px;
   transition: 0.3s;
+  top: 0;
+  left: 0;
+  height: 100vh;
+  overflow-y: auto;
+  overflow-x: hidden;
+}
+
+.sidebar::-webkit-scrollbar {
+  width: 6px;
+}
+
+.sidebar::-webkit-scrollbar-track {
+  background: rgba(255,255,255,0.1);
+}
+
+.sidebar::-webkit-scrollbar-thumb {
+  background: rgba(255,255,255,0.3);
+  border-radius: 3px;
+}
+
+.sidebar::-webkit-scrollbar-thumb:hover {
+  background: rgba(255,255,255,0.5);
 }
 
 .small-sidebar{
@@ -16,6 +50,44 @@
 
 .small-sidebar .sidebar-text{
   display: none;
+}
+
+/* Adjust main content when sidebar is visible */
+main.d-flex.flex-nowrap {
+  margin-left: 0;
+}
+
+main.d-flex.flex-nowrap section,
+main.d-flex.flex-nowrap .container-fluid {
+  margin-left: 280px;
+  width: calc(100% - 280px);
+  transition: margin-left 0.3s, width 0.3s;
+}
+
+.small-sidebar ~ section,
+.small-sidebar ~ .container-fluid {
+  margin-left: 77px !important;
+  width: calc(100% - 77px) !important;
+}
+
+/* Fix table alignment */
+section .table,
+.container-fluid .table {
+  width: 100% !important;
+  max-width: 100%;
+}
+
+section,
+.container-fluid {
+  padding: 20px;
+  overflow-x: auto;
+}
+
+/* Navbar - normal flow, not fixed */
+.navbar {
+  margin-bottom: 1rem;
+  padding: 0;
+  border-radius: 12px;
 }
 
 
